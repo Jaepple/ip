@@ -1,9 +1,10 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Tika {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Task[] list = new Task[100];
+        ArrayList<Task> list = new ArrayList<>();
         int count = 0;
 
         System.out.println("____________________________________________________________");
@@ -20,7 +21,7 @@ public class Tika {
                 if (parts.length == 2) {
                     try {
                         int number = Integer.parseInt(parts[1]);
-                        Task currTask = list[number - 1];
+                        Task currTask = list.get(number - 1);
                         if (number > count) {
                             throw new TikaException("Not a valid task!");
                         }
@@ -31,7 +32,7 @@ public class Tika {
                             currTask.toggleIsDone();
                             System.out.println("____________________________________________________________");
                             System.out.println("Nice! I've marked this task as done:");
-                            System.out.println("  [" + currTask.getStatusIcon() + "] " + currTask.getDescription());
+                            System.out.println("  " + currTask.toString());
                             System.out.println("____________________________________________________________");
                             input = scanner.nextLine();
                             continue;
@@ -42,8 +43,18 @@ public class Tika {
                             currTask.toggleIsDone();
                             System.out.println("____________________________________________________________");
                             System.out.println("OK, I've marked this task as not done yet:");
-                            System.out.println("  [" + currTask.getStatusIcon() + "] " + currTask.getDescription());
+                            System.out.println("  " + currTask.toString());
                             System.out.println("____________________________________________________________");
+                            input = scanner.nextLine();
+                            continue;
+                        } else if (parts[0].equals("delete")) {
+                            count--;
+                            System.out.println("____________________________________________________________");
+                            System.out.println("Noted. I've removed this task:");
+                            System.out.println("  " + currTask.toString());
+                            System.out.println("Now you have " + count + " tasks in the list.");
+                            System.out.println("____________________________________________________________");
+                            list.remove(number - 1);
                             input = scanner.nextLine();
                             continue;
                         }
@@ -59,7 +70,7 @@ public class Tika {
                         } else {
                             System.out.println("____________________________________________________________");
                             for (int i = 1; i <= count; i++) {
-                                Task currTask = list[i - 1];
+                                Task currTask = list.get(i - 1);
                                 System.out.println(i + "." + currTask.toString());
                             }
                             System.out.println("____________________________________________________________");
@@ -76,7 +87,7 @@ public class Tika {
                                 }
                                 description = input.substring("todo ".length());
                                 newTask = new ToDo(description);
-                                list[count] = newTask;
+                                list.add(newTask);
                                 break;
                             case "deadline":
                                 if (input.substring("deadline".length()).isEmpty()) {
@@ -86,7 +97,7 @@ public class Tika {
                                 // do a check for /by present
                                 description = split[0].substring("deadline ".length());
                                 newTask = new Deadline(description, split[1]);
-                                list[count] = newTask;
+                                list.add(newTask);
                                 break;
                             case "event":
                                 if (input.substring("event".length()).isEmpty()) {
@@ -98,7 +109,7 @@ public class Tika {
                                 String[] split2 = split1[1].split(" /to ");
                                 // do a check for /to present
                                 newTask = new Event(description, split2[0], split2[1]);
-                                list[count] = newTask;
+                                list.add(newTask);
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value: " + firstWord);
