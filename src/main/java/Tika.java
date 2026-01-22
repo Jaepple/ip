@@ -15,6 +15,7 @@ public class Tika {
 
         while (!input.equals("bye")) {
             String[] parts = input.split(" ");
+            String firstWord = parts[0];
             if (parts.length == 2) {
                 try {
                     int number = Integer.parseInt(parts[1]);
@@ -44,7 +45,7 @@ public class Tika {
                 }
             }
 
-            switch (input) {
+            switch (firstWord) {
                 case "list":
                     if (count == 0) {
                         System.out.println("____________________________________________________________");
@@ -54,17 +55,48 @@ public class Tika {
                         System.out.println("____________________________________________________________");
                         for (int i = 1; i <= count; i++) {
                             Task currTask = list[i - 1];
-                            System.out.println(i + ".[" + currTask.getStatusIcon() + "] " + currTask.getDescription());
+                            System.out.println(i + "." + currTask.toString());
                         }
                         System.out.println("____________________________________________________________");
                     }
                     input = scanner.nextLine();
                     break;
+                case "todo", "deadline", "event":
+                    Task newTask;
+                    String description;
+                    switch (firstWord) {
+                        case "todo":
+                            description = input.substring("todo ".length());
+                            newTask = new ToDo(description);
+                            list[count] = newTask;
+                            break;
+                        case "deadline":
+                            String[] split = input.split(" /by ");
+                            description = split[0].substring("deadline ".length());
+                            newTask = new Deadline(description, split[1]);
+                            list[count] = newTask;
+                            break;
+                        case "event":
+                            String[] split1 = input.split(" /from ");
+                            description = split1[0].substring("event ".length());
+                            String[] split2 = split1[1].split(" /to ");
+                            newTask = new Event(description, split2[0], split2[1]);
+                            list[count] = newTask;
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + firstWord);
+                    }
+                    count++;
+                    System.out.println("____________________________________________________________");
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + newTask.toString());
+                    System.out.println("Now you have " + count + " tasks in the list.");
+                    System.out.println("____________________________________________________________");
+                    input = scanner.nextLine();
+                    break;
                 default:
                     System.out.println("____________________________________________________________");
-                    list[count] = new Task(input);
-                    count++;
-                    System.out.println("added: " + input);
+                    System.out.println("Not a valid task type! Try again.");
                     System.out.println("____________________________________________________________");
                     input = scanner.nextLine();
                     break;
