@@ -1,6 +1,24 @@
 package tika;
 
+/**
+ * The main class of the Tika chatbot application.
+ *
+ * <p>This class is responsible for:
+ * <ul>
+ *     <li>Starting the chatbot and greeting the user</li>
+ *     <li>Reading user commands in a loop until the user exits</li>
+ *     <li>Handling task operations such as add, delete, mark, unmark</li>
+ *     <li>Saving and loading tasks from disk via Storage</li>
+ * </ul>
+ */
+
 public class Tika {
+    /**
+     * Entry point of the Tika chatbot application.
+     * Initializes storage, loads existing tasks, and starts the user interaction loop.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         Storage storage = new Storage();
