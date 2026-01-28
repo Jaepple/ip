@@ -12,4 +12,9 @@ public class Event extends Task {
     public String toString() {
         return "[E][" + this.getStatusIcon() + "] " + this.description + " (from: " + this.from + " to: " + this.to + ")";
     }
+
+    public String toFileString() {
+        return "E | " + (this.isDone ? "1" : "0") + " | " + this.description
+                + " | " + this.from + " | " + this.to;
+    }
 }

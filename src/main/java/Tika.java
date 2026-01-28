@@ -4,8 +4,9 @@ import java.util.ArrayList;
 public class Tika {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> list = new ArrayList<>();
-        int count = 0;
+        Storage storage = new Storage();
+        ArrayList<Task> list = storage.load();
+        int count = list.size();
 
         System.out.println("____________________________________________________________");
         System.out.println("Hello! I'm Tika");
@@ -30,6 +31,7 @@ public class Tika {
                                 throw new TikaException("Task is already marked.");
                             }
                             currTask.toggleIsDone();
+                            storage.save(list);
                             System.out.println("____________________________________________________________");
                             System.out.println("Nice! I've marked this task as done:");
                             System.out.println("  " + currTask.toString());
@@ -41,6 +43,7 @@ public class Tika {
                                 throw new TikaException("Task is already unmarked.");
                             }
                             currTask.toggleIsDone();
+                            storage.save(list);
                             System.out.println("____________________________________________________________");
                             System.out.println("OK, I've marked this task as not done yet:");
                             System.out.println("  " + currTask.toString());
@@ -49,6 +52,7 @@ public class Tika {
                             continue;
                         } else if (parts[0].equals("delete")) {
                             count--;
+                            storage.save(list);
                             System.out.println("____________________________________________________________");
                             System.out.println("Noted. I've removed this task:");
                             System.out.println("  " + currTask.toString());
@@ -115,6 +119,7 @@ public class Tika {
                                 throw new IllegalStateException("Unexpected value: " + firstWord);
                         }
                         count++;
+                        storage.save(list);
                         System.out.println("____________________________________________________________");
                         System.out.println("Got it. I've added this task:");
                         System.out.println("  " + newTask.toString());
