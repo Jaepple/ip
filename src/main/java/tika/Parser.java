@@ -17,19 +17,29 @@ public class Parser {
         return parts.length;
     }
 
+    public static String parseKeyword(String input) throws TikaException {
+        String[] parts = input.split(" ", 2);
+
+        if (parts.length < 2 || parts[1].isBlank()) {
+            throw new TikaException("Please provide a keyword to search for.");
+        }
+
+        return parts[1].trim();
+    }
+
     public static Task parseTask(String input) throws TikaException {
         String command = getCommandWord(input);
 
         switch (command) {
             case "todo":
-                if (input.length() <= 5) {
+                if (input.trim().length() <= 5) {
                     throw new TikaException("The description of a todo cannot be empty.");
                 }
                 return new ToDo(input.substring(5));
 
             case "deadline":
                 try {
-                    String[] split = input.split(" /by ");
+                    String[] split = input.trim().split(" /by ");
                     if (split.length < 2) {
                         throw new TikaException(
                                 "Deadline must be: deadline <desc> /by yyyy-mm-dd HHmm");
@@ -44,7 +54,7 @@ public class Parser {
                 }
 
             case "event":
-                String[] split1 = input.split(" /from ");
+                String[] split1 = input.trim().split(" /from ");
                 String[] split2 = split1[1].split(" /to ");
                 return new Event(
                         split1[0].substring(6),

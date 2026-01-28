@@ -1,3 +1,5 @@
 E | 0 | find | 3 | 2
 D | 0 | return book | 2026-02-05 1800
 E | 0 | project meeting | 2026-02-06 1400 | 2026-02-06 1600
+T | 0 | fly
+T | 0 | book club meeting

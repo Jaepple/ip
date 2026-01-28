@@ -1,4 +1,5 @@
 package tika;
+import java.util.ArrayList;
 
 /**
  * The main class of the Tika chatbot application.
@@ -71,36 +72,55 @@ public class Tika {
                         default:
                             break;
                         }
-                    } catch (NumberFormatException ignored) {
+                    } catch (NumberFormatException e) {
+                        System.out.println("plop");
                     }
                 }
 
                 switch (firstWord) {
-                case "list":
-                    if (taskList.size() == 0) {
-                        throw new TikaException("List is empty... :(");
-                    }
-                    ui.showLine();
-                    for (int i = 1; i <= taskList.size(); i++) {
-                        Task currTask = taskList.get(i - 1);
-                        System.out.println(i + "." + currTask.toString());
-                    }
-                    ui.showLine();
-                    input = ui.readCommand();
-                    break;
+                    case "list":
+                        if (taskList.size() == 0) {
+                            throw new TikaException("List is empty... :(");
+                        } else {
+                            ui.showLine();
+                            for (int i = 1; i <= taskList.size(); i++) {
+                                Task currTask = taskList.get(i - 1);
+                                System.out.println(i + "." + currTask.toString());
+                            }
+                            ui.showLine();
+                        }
+                        input = ui.readCommand();
+                        break;
 
-                case "todo":
-                case "deadline":
-                case "event":
-                    Task newTask = Parser.parseTask(input);
-                    taskList.add(newTask);
-                    storage.save(taskList.getTasks());
-                    ui.addTask(newTask, taskList.size());
-                    input = ui.readCommand();
-                    break;
+                    case "find":
+                        String keyword = Parser.parseKeyword(input);
+                        ArrayList<Task> matches = taskList.find(keyword);
 
-                default:
-                    throw new TikaException("Not a valid task type! Try again.");
+                        ui.showLine();
+                        if (matches.isEmpty()) {
+                            System.out.println("No matching tasks found.");
+                        } else {
+                            System.out.println("Here are the matching tasks in your list:");
+                            for (int i = 0; i < matches.size(); i++) {
+                                System.out.println((i + 1) + "." + matches.get(i).toString());
+                            }
+                        }
+                        ui.showLine();
+                        input = ui.readCommand();
+                        break;
+
+                    case "todo":
+                    case "deadline":
+                    case "event":
+                        Task newTask = Parser.parseTask(input);
+                        taskList.add(newTask);
+                        storage.save(taskList.getTasks());
+                        ui.addTask(newTask, taskList.size());
+                        input = ui.readCommand();
+                        break;
+
+                    default:
+                        throw new TikaException("Not a valid task type! Try again.");
                 }
 
             } catch (TikaException e) {
