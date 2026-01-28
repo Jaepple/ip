@@ -5,8 +5,7 @@ public class Tika {
     public static void main(String[] args) {
         Ui ui = new Ui();
         Storage storage = new Storage();
-        ArrayList<Task> list = storage.load();
-        int count = list.size();
+        TaskList taskList = new TaskList(storage.load());
 
         ui.showWelcome();
         String input = ui.readCommand();
@@ -18,16 +17,16 @@ public class Tika {
                 if (parts.length == 2) {
                     try {
                         int number = Integer.parseInt(parts[1]);
-                        Task currTask = list.get(number - 1);
-                        if (number > count) {
+                        if (number > taskList.size()) { // to fix: should allow todo 3 as a task
                             throw new TikaException("Not a valid task!");
                         }
+                        Task currTask = taskList.get(number - 1);
                         if (parts[0].equals("mark")) {
                             if (currTask.isDone) {
                                 throw new TikaException("Task is already marked.");
                             }
                             currTask.toggleIsDone();
-                            storage.save(list);
+                            storage.save(taskList.getTasks());
                             ui.markTask(currTask);
                             input = ui.readCommand();
                             continue;
@@ -36,31 +35,30 @@ public class Tika {
                                 throw new TikaException("Task is already unmarked.");
                             }
                             currTask.toggleIsDone();
-                            storage.save(list);
+                            storage.save(taskList.getTasks());
                             ui.unmarkTask(currTask);
                             input = ui.readCommand();
                             continue;
                         } else if (parts[0].equals("delete")) {
-                            count--;
-                            storage.save(list);
-                            ui.deleteTask(currTask, count);
-                            list.remove(number - 1);
+                            storage.save(taskList.getTasks());
+                            taskList.remove(number - 1);
+                            ui.deleteTask(currTask, taskList.size());
                             input = ui.readCommand();
                             continue;
                         }
                     } catch (NumberFormatException e) {
-                        // ignore
+                        System.out.println("plop");
                     }
                 }
 
                 switch (firstWord) {
                     case "list":
-                        if (count == 0) {
+                        if (taskList.size() == 0) {
                             throw new TikaException("List is empty... :(");
                         } else {
                             ui.showLine();
-                            for (int i = 1; i <= count; i++) {
-                                Task currTask = list.get(i - 1);
+                            for (int i = 1; i <= taskList.size(); i++) {
+                                Task currTask = taskList.get(i - 1);
                                 System.out.println(i + "." + currTask.toString());
                             }
                             ui.showLine();
@@ -77,7 +75,7 @@ public class Tika {
                                 }
                                 description = input.substring("todo ".length());
                                 newTask = new ToDo(description);
-                                list.add(newTask);
+                                taskList.add(newTask);
                                 break;
                             case "deadline":
                                 if (input.substring("deadline".length()).isEmpty()) {
@@ -93,7 +91,7 @@ public class Tika {
 
                                     description = split[0].substring("deadline ".length());
                                     newTask = new Deadline(description, split[1]);
-                                    list.add(newTask);
+                                    taskList.add(newTask);
                                     break;
 
                                 } catch (DateTimeParseException e) {
@@ -111,14 +109,13 @@ public class Tika {
                                 String[] split2 = split1[1].split(" /to ");
                                 // do a check for /to present
                                 newTask = new Event(description, split2[0], split2[1]);
-                                list.add(newTask);
+                                taskList.add(newTask);
                                 break;
                             default:
                                 throw new IllegalStateException("Unexpected value: " + firstWord);
                         }
-                        count++;
-                        storage.save(list);
-                        ui.addTask(newTask, count);
+                        storage.save(taskList.getTasks());
+                        ui.addTask(newTask, taskList.size());
                         input = ui.readCommand();
                         break;
                     default:

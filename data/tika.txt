@@ -1,4 +1,3 @@
 T | 1 | drink juice
-D | 0 | eat food | 2026-01-30 1902
-E | 0 | exam cs2106 | jan | feb
-T | 0 | 
+T | 0 | ro3
+T | 0 | 33 apples
