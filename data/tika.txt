@@ -1,1 +1,1 @@
-T | 0 | fry chicken
+D | 1 | return book | 2019-10-15 1800

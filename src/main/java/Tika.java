@@ -1,3 +1,4 @@
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -97,12 +98,24 @@ public class Tika {
                                 if (input.substring("deadline".length()).isEmpty()) {
                                     throw new TikaException("The description of a deadline cannot be empty.");
                                 }
-                                String[] split = input.split(" /by ");
-                                // do a check for /by present
-                                description = split[0].substring("deadline ".length());
-                                newTask = new Deadline(description, split[1]);
-                                list.add(newTask);
-                                break;
+                                try {
+                                    String[] split = input.split(" /by ");
+                                    if (split.length < 2) {
+                                        throw new TikaException(
+                                                "Deadline must be: deadline <desc> /by yyyy-mm-dd HHmm"
+                                        );
+                                    }
+
+                                    description = split[0].substring("deadline ".length());
+                                    newTask = new Deadline(description, split[1]);
+                                    list.add(newTask);
+                                    break;
+
+                                } catch (DateTimeParseException e) {
+                                    throw new TikaException(
+                                            "Invalid date/time format! Use yyyy-mm-dd HHmm"
+                                    );
+                                }
                             case "event":
                                 if (input.substring("event".length()).isEmpty()) {
                                     throw new TikaException("The description of a event cannot be empty.");
