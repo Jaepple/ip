@@ -1,5 +1,7 @@
 package tika;
 
+import java.util.ArrayList;
+
 public class Tika {
     public static void main(String[] args) {
         Ui ui = new Ui();
@@ -61,6 +63,22 @@ public class Tika {
                             }
                             ui.showLine();
                         }
+                        input = ui.readCommand();
+                        break;
+                    case "find":
+                        String keyword = Parser.parseKeyword(input);
+                        ArrayList<Task> matches = taskList.find(keyword);
+
+                        ui.showLine();
+                        if (matches.isEmpty()) {
+                            System.out.println("No matching tasks found.");
+                        } else {
+                            System.out.println("Here are the matching tasks in your list:");
+                            for (int i = 0; i < matches.size(); i++) {
+                                System.out.println((i + 1) + "." + matches.get(i).toString());
+                            }
+                        }
+                        ui.showLine();
                         input = ui.readCommand();
                         break;
                     case "todo", "deadline", "event":
