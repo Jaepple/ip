@@ -1,3 +1,1 @@
-T | 1 | drink juice
-T | 0 | ro3
-T | 0 | 33 apples
+E | 0 | find | 3 | 2
