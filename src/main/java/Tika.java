@@ -1,20 +1,15 @@
 import java.time.format.DateTimeParseException;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Tika {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Ui ui = new Ui();
         Storage storage = new Storage();
         ArrayList<Task> list = storage.load();
         int count = list.size();
 
-        System.out.println("____________________________________________________________");
-        System.out.println("Hello! I'm Tika");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
-
-        String input = scanner.nextLine();
+        ui.showWelcome();
+        String input = ui.readCommand();
 
         while (!input.equals("bye")) {
             try {
@@ -33,11 +28,8 @@ public class Tika {
                             }
                             currTask.toggleIsDone();
                             storage.save(list);
-                            System.out.println("____________________________________________________________");
-                            System.out.println("Nice! I've marked this task as done:");
-                            System.out.println("  " + currTask.toString());
-                            System.out.println("____________________________________________________________");
-                            input = scanner.nextLine();
+                            ui.markTask(currTask);
+                            input = ui.readCommand();
                             continue;
                         } else if (parts[0].equals("unmark")) {
                             if (!currTask.isDone) {
@@ -45,22 +37,15 @@ public class Tika {
                             }
                             currTask.toggleIsDone();
                             storage.save(list);
-                            System.out.println("____________________________________________________________");
-                            System.out.println("OK, I've marked this task as not done yet:");
-                            System.out.println("  " + currTask.toString());
-                            System.out.println("____________________________________________________________");
-                            input = scanner.nextLine();
+                            ui.unmarkTask(currTask);
+                            input = ui.readCommand();
                             continue;
                         } else if (parts[0].equals("delete")) {
                             count--;
                             storage.save(list);
-                            System.out.println("____________________________________________________________");
-                            System.out.println("Noted. I've removed this task:");
-                            System.out.println("  " + currTask.toString());
-                            System.out.println("Now you have " + count + " tasks in the list.");
-                            System.out.println("____________________________________________________________");
+                            ui.deleteTask(currTask, count);
                             list.remove(number - 1);
-                            input = scanner.nextLine();
+                            input = ui.readCommand();
                             continue;
                         }
                     } catch (NumberFormatException e) {
@@ -73,14 +58,14 @@ public class Tika {
                         if (count == 0) {
                             throw new TikaException("List is empty... :(");
                         } else {
-                            System.out.println("____________________________________________________________");
+                            ui.showLine();
                             for (int i = 1; i <= count; i++) {
                                 Task currTask = list.get(i - 1);
                                 System.out.println(i + "." + currTask.toString());
                             }
-                            System.out.println("____________________________________________________________");
+                            ui.showLine();
                         }
-                        input = scanner.nextLine();
+                        input = ui.readCommand();
                         break;
                     case "todo", "deadline", "event":
                         Task newTask;
@@ -133,25 +118,17 @@ public class Tika {
                         }
                         count++;
                         storage.save(list);
-                        System.out.println("____________________________________________________________");
-                        System.out.println("Got it. I've added this task:");
-                        System.out.println("  " + newTask.toString());
-                        System.out.println("Now you have " + count + " tasks in the list.");
-                        System.out.println("____________________________________________________________");
-                        input = scanner.nextLine();
+                        ui.addTask(newTask, count);
+                        input = ui.readCommand();
                         break;
                     default:
                         throw new TikaException("Not a valid task type! Try again.");
                 }
             } catch (TikaException e) {
-                System.out.println("____________________________________________________________");
-                System.out.println(e.getMessage());
-                System.out.println("____________________________________________________________");
-                input = scanner.nextLine();
+                ui.showMessage(e.getMessage());
+                input = ui.readCommand();
             }
         }
-        System.out.println("____________________________________________________________");
-        System.out.println("Bye. Hope to see you again soon!");
-        System.out.println("____________________________________________________________");
+        ui.showBye();
     }
 }

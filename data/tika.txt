@@ -1,1 +1,4 @@
-D | 1 | return book | 2019-10-15 1800
+T | 1 | drink juice
+D | 0 | eat food | 2026-01-30 1902
+E | 0 | exam cs2106 | jan | feb
+T | 0 | 
