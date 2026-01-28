@@ -1,5 +1,4 @@
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+package tika;
 
 public class Tika {
     public static void main(String[] args) {
