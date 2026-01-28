@@ -28,12 +28,15 @@ test {
 }
 
 application {
-    mainClass.set("seedu.duke.Duke")
+    mainClass.set("tika.Tika")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = 'tika'
     archiveClassifier = null
+    manifest {
+        attributes 'Main-Class': 'tika.Tika'  // <-- match your main class here too
+    }
 }
 
 run{
