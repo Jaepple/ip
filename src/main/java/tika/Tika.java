@@ -1,27 +1,13 @@
 package tika;
-import java.util.ArrayList;
 
-/**
- * The main class of the Tika chatbot application.
- *
- * <p>This class is responsible for:
- * <ul>
- *     <li>Starting the chatbot and greeting the user</li>
- *     <li>Reading user commands in a loop until the user exits</li>
- *     <li>Handling task operations such as add, delete, mark, unmark</li>
- *     <li>Saving and loading tasks from disk via Storage</li>
- * </ul>
- */
+import java.util.ArrayList;
 
 public class Tika {
     private Ui ui;
     private Storage storage;
     private TaskList taskList;
+    private boolean shouldExit = false;
 
-    /**
-     * Constructs the Tika chatbot application.
-     * Initializes UI, storage, and loads existing tasks.
-     */
     public Tika() {
         ui = new Ui();
         storage = new Storage();
@@ -29,59 +15,42 @@ public class Tika {
     }
 
     /**
-     * Entry point of the application.
+     * Generates a response for the user's chat message.
      */
-    public static void main(String[] args) {
-        new Tika().run();
-    }
-
-    /**
-     * Runs the main user interaction loop.
-     */
-    public void run() {
-        ui.showWelcome();
-        String input = ui.readCommand();
-
-        while (!input.equals("bye")) {
+    public String getResponse(String input) {
+        if (!input.equals("bye")) {
             try {
                 String firstWord = Parser.getCommandWord(input);
 
                 if (firstWord.equals("mark") || firstWord.equals("unmark") || firstWord.equals("delete")) {
-                    handleIndexedCommands(firstWord, input);
-                    input = ui.readCommand();
-                    continue;
+                    return handleIndexedCommands(firstWord, input);
                 }
 
                 switch (firstWord) {
                 case "list":
-                    listTasks();
-                    break;
+                    return listTasks();
 
                 case "find":
-                    findTasks(input);
-                    break;
+                    return findTasks(input);
 
                 case "todo":
                 case "deadline":
                 case "event":
-                    addTask(input);
-                    break;
+                    return addTask(input);
 
                 default:
                     throw new TikaException("Not a valid task type! Try again.");
                 }
 
             } catch (TikaException e) {
-                ui.showMessage(e.getMessage());
+                return ui.showMessage(e.getMessage());
             }
-
-            input = ui.readCommand();
         }
-
-        ui.showBye();
+        shouldExit = true;
+        return ui.showBye();
     }
 
-    private void handleIndexedCommands(String command, String input) throws TikaException {
+    private String handleIndexedCommands(String command, String input) throws TikaException {
         if (Parser.length(input) != 2) {
             throw new TikaException("Not a valid command!");
         }
@@ -100,8 +69,7 @@ public class Tika {
             }
             task.toggleIsDone();
             storage.save(taskList.getTasks());
-            ui.markTask(task);
-            break;
+            return ui.markTask(task);
 
         case "unmark":
             if (!task.isDone) {
@@ -109,52 +77,55 @@ public class Tika {
             }
             task.toggleIsDone();
             storage.save(taskList.getTasks());
-            ui.unmarkTask(task);
-            break;
+            return ui.unmarkTask(task);
 
         case "delete":
             taskList.remove(number - 1);
             storage.save(taskList.getTasks());
-            ui.deleteTask(task, taskList.size());
-            break;
+            return ui.deleteTask(task, taskList.size());
 
         default:
-            break;
+            throw new TikaException("Command not recognised. Try again!");
         }
     }
 
-    private void listTasks() throws TikaException {
+    private String listTasks() throws TikaException {
         if (taskList.size() == 0) {
             throw new TikaException("List is empty... :(");
         }
 
-        ui.showLine();
+        StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= taskList.size(); i++) {
-            System.out.println(i + "." + taskList.get(i - 1));
+            sb.append(i).append(".").append(taskList.get(i - 1)).append("\n");
         }
-        ui.showLine();
+
+        return sb.toString().trim();
     }
 
-    private void findTasks(String input) throws TikaException {
+    private String findTasks(String input) throws TikaException {
         String keyword = Parser.parseKeyword(input);
         ArrayList<Task> matches = taskList.find(keyword);
 
-        ui.showLine();
         if (matches.isEmpty()) {
-            System.out.println("No matching tasks found.");
+            return "No matching tasks found.";
         } else {
-            System.out.println("Here are the matching tasks in your list:");
+            StringBuilder sb = new StringBuilder();
+            sb.append("Here are the matching tasks in your list:\n");
             for (int i = 0; i < matches.size(); i++) {
-                System.out.println((i + 1) + "." + matches.get(i));
+                sb.append(i + 1).append(".").append(matches.get(i)).append("\n");
             }
+            return sb.toString().trim();
         }
-        ui.showLine();
     }
 
-    private void addTask(String input) throws TikaException {
+    private String addTask(String input) throws TikaException {
         Task task = Parser.parseTask(input);
         taskList.add(task);
         storage.save(taskList.getTasks());
-        ui.addTask(task, taskList.size());
+        return ui.addTask(task, taskList.size());
+    }
+
+    public boolean shouldExit() {
+        return shouldExit;
     }
 }

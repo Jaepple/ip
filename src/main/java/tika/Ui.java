@@ -1,64 +1,35 @@
 package tika;
 
-import java.util.Scanner;
 
 public class Ui {
-    private final Scanner scanner = new Scanner(System.in);
 
-    public void showWelcome() {
-        System.out.println("____________________________________________________________");
-        System.out.println("Hello! I'm Tika");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
+    public String showWelcome() {
+        return "Hello! I'm Tika\nWhat can I do for you?";
     }
 
-    public void showLine() {
-        System.out.println("____________________________________________________________");
+    public String showMessage(String message) {
+        return message;
     }
 
-    public void showMessage(String message) {
-        showLine();
-        System.out.println(message);
-        showLine();
+    public String markTask(Task currTask) {
+        return "Nice! I've marked this task as done:\n  " + currTask.toString();
     }
 
-    public String readCommand() {
-        return scanner.nextLine();
+    public String unmarkTask(Task currTask) {
+        return "OK, I've marked this task as not done yet:\n  " + currTask.toString();
     }
 
-    public void markTask(Task currTask) {
-        showLine();
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + currTask.toString());
-        showLine();
+    public String deleteTask(Task currTask, int count) {
+        return "Noted. I've removed this task:\n  " + currTask.toString()
+                + "\nNow you have " + count + " tasks in the list.";
     }
 
-    public void unmarkTask(Task currTask) {
-        showLine();
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + currTask.toString());
-        showLine();
+    public String addTask(Task newTask, int count) {
+        return "Got it. I've added this task:\n  " + newTask.toString()
+                + "\nNow you have " + count + " tasks in the list.";
     }
 
-    public void deleteTask(Task currTask, int count) {
-        showLine();
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + currTask.toString());
-        System.out.println("Now you have " + count + " tasks in the list.");
-        showLine();
-    }
-
-    public void addTask(Task newTask, int count) {
-        showLine();
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + newTask.toString());
-        System.out.println("Now you have " + count + " tasks in the list.");
-        showLine();
-    }
-
-    public void showBye() {
-        showLine();
-        System.out.println("Bye. Hope to see you again soon!");
-        showLine();
+    public String showBye() {
+        return "Bye. Hope to see you again soon!";
     }
 }

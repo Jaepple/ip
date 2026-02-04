@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
-    private TikaChat tikaChat = new TikaChat();
+    private Tika tika = new Tika();
 
     @Override
     public void start(Stage stage) {
@@ -22,7 +22,7 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setTika(tikaChat);  // inject the Duke instance
+            fxmlLoader.<MainWindow>getController().setTika(tika);  // inject the Duke instance
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
