@@ -9,7 +9,11 @@ public class Parser {
     }
 
     public static int parseIndex(String input) throws TikaException {
-        return Integer.parseInt(input.split(" ")[1]);
+        try {
+            return Integer.parseInt(input.split(" ")[1]);
+        } catch (NumberFormatException e) {
+            throw new TikaException("Invalid index! Must be an integer.");
+        }
     }
 
     public static int length(String input) {
@@ -55,7 +59,15 @@ public class Parser {
 
             case "event":
                 String[] split1 = input.trim().split(" /from ");
+                if (split1.length < 2) {
+                    throw new TikaException(
+                            "Event must be: event <desc> /from <start> /to <end>");
+                }
                 String[] split2 = split1[1].split(" /to ");
+                if (split2.length < 2) {
+                    throw new TikaException(
+                            "Event must be: event <desc> /from <start> /to <end>");
+                }
                 return new Event(
                         split1[0].substring(6),
                         split2[0],
