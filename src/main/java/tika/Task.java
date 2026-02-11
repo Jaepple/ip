@@ -52,6 +52,15 @@ public abstract class Task {
         return this.description;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Task)) return false;
+
+        Task otherTask = (Task) obj;
+        return this.description.equalsIgnoreCase(otherTask.description);
+    }
+
     /**
      * Returns a string representation of the task suitable for saving to a file.
      * Each subclass of Task must implement this method to define its own format.

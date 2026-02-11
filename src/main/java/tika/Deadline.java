@@ -59,4 +59,16 @@ public class Deadline extends Task {
     public String toFileString() {
         return "D | " + (this.isDone ? "1" : "0") + " | " + this.description + " | " + this.deadline.format(INPUT_FORMAT);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Deadline)) return false;
+
+        Deadline otherTask = (Deadline) obj;
+
+        // Compare description (case-insensitive) and exact deadline
+        return this.description.equalsIgnoreCase(otherTask.description)
+                && this.deadline.equals(otherTask.deadline);
+    }
 }

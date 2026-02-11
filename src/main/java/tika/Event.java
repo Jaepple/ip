@@ -54,4 +54,16 @@ public class Event extends Task {
         return "E | " + (this.isDone ? "1" : "0") + " | " + this.description
                 + " | " + this.from + " | " + this.to;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Event)) return false;
+
+        Event otherTask = (Event) obj;
+
+        return this.description.equalsIgnoreCase(otherTask.description)
+                && this.from.equals(otherTask.from)
+                && this.to.equals(otherTask.to);
+    }
 }
