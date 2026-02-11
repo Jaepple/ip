@@ -1,5 +1,5 @@
-D | 1 | return book | 2026-02-05 1800
 E | 0 | project meeting | 2026-02-06 1400 | 2026-02-06 1600
 T | 0 | fly
 T | 1 | book club meeting
 T | 0 | eat food
+E | 0 | poop | today | ystday

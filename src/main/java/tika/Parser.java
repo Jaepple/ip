@@ -58,20 +58,20 @@ public class Parser {
                 }
 
             case "event":
-                String[] split1 = input.trim().split(" /from ");
-                if (split1.length < 2) {
+                String[] firstSplit = input.trim().split(" /from ");
+                if (firstSplit.length < 2) {
                     throw new TikaException(
                             "Event must be: event <desc> /from <start> /to <end>");
                 }
-                String[] split2 = split1[1].split(" /to ");
-                if (split2.length < 2) {
+                String[] secondSplit = firstSplit[1].split(" /to ");
+                if (secondSplit.length < 2) {
                     throw new TikaException(
                             "Event must be: event <desc> /from <start> /to <end>");
                 }
                 return new Event(
-                        split1[0].substring(6),
-                        split2[0],
-                        split2[1]
+                        firstSplit[0].substring(6),
+                        secondSplit[0],
+                        secondSplit[1]
                 );
 
             default:
