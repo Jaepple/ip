@@ -5,12 +5,16 @@ import java.time.format.DateTimeParseException;
 public class Parser {
 
     public static String getCommandWord(String input) {
+        assert !input.isBlank() : "Input should not be blank";
         return input.split(" ")[0];
     }
 
     public static int parseIndex(String input) throws TikaException {
+        String[] parts = input.split(" ");
+        assert parts.length >= 2 : "Indexed command should at least have 2 parts";
+
         try {
-            return Integer.parseInt(input.split(" ")[1]);
+            return Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
             throw new TikaException("Invalid index! Must be an integer.");
         }
@@ -22,6 +26,7 @@ public class Parser {
     }
 
     public static String parseKeyword(String input) throws TikaException {
+        assert !input.isBlank() : "Task input should not be blank";
         String[] parts = input.split(" ", 2);
 
         if (parts.length < 2 || parts[1].isBlank()) {
@@ -32,6 +37,8 @@ public class Parser {
     }
 
     public static Task parseTask(String input) throws TikaException {
+        assert !input.isBlank() : "Task input should not be blank";
+
         String command = getCommandWord(input);
 
         switch (command) {
