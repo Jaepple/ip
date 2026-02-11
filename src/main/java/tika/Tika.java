@@ -13,6 +13,8 @@ public class Tika {
         ui = new Ui();
         storage = new Storage();
         taskList = new TaskList(storage.load());
+
+        assert taskList != null : "TaskList should not be null after loading storage";
     }
 
     /**
@@ -87,8 +89,12 @@ public class Tika {
             return ui.unmarkTask(targetTask);
 
         case "delete":
+            int oldSize = taskList.size();
             taskList.remove(taskListIndex);
             saveTasks();
+
+            assert taskList.size() == oldSize - 1 : "TaskList size should decrease after deletion";
+
             return ui.deleteTask(targetTask, taskList.size());
 
         default:
@@ -131,6 +137,8 @@ public class Tika {
 
     private String addTask(String input) throws TikaException {
         Task newTask = Parser.parseTask(input);
+        assert newTask != null : "Parsed task should not be null";
+
         taskList.add(newTask);
         saveTasks();
         return ui.addTask(newTask, taskList.size());
