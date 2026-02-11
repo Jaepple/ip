@@ -45,7 +45,10 @@ public class TaskList {
      *
      * @param task The task to add
      */
-    public void add(Task task) {
+    public void add(Task task) throws TikaException {
+        if (tasks.contains(task)) { // uses Task.equals() automatically
+            throw new TikaException("This task already exists in your list.");
+        }
         tasks.add(task);
     }
 
