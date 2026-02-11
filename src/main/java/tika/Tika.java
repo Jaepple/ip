@@ -3,6 +3,7 @@ package tika;
 import java.util.ArrayList;
 
 public class Tika {
+    static final int MIN_INDEXED_COMMAND_LENGTH = 2;
     private Ui ui;
     private Storage storage;
     private TaskList taskList;
@@ -20,15 +21,21 @@ public class Tika {
      * Generates a response for the user's chat message.
      */
     public String getResponse(String input) {
-        if (!input.equals("bye")) {
-            try {
-                String firstWord = Parser.getCommandWord(input);
+        if (input.equals("bye")) {
+            shouldExit = true;
+            return ui.showBye();
+        }
 
-                if (firstWord.equals("mark") || firstWord.equals("unmark") || firstWord.equals("delete")) {
-                    return handleIndexedCommands(firstWord, input);
-                }
+        try {
+            String firstWord = Parser.getCommandWord(input);
 
-                switch (firstWord) {
+            // Handle indexed commands early
+            if (firstWord.equals("mark") || firstWord.equals("unmark") || firstWord.equals("delete")) {
+                return handleIndexedCommands(firstWord, input);
+            }
+
+            // Handle other commands
+            switch (firstWord) {
                 case "list":
                     return listTasks();
 
@@ -44,59 +51,59 @@ public class Tika {
                     throw new TikaException("Not a valid task type! Try again.");
                 }
 
-            } catch (TikaException e) {
-                return ui.showMessage(e.getMessage());
-            }
+        } catch (TikaException e) {
+            return ui.showMessage(e.getMessage());
         }
-        shouldExit = true;
-        return ui.showBye();
     }
 
     private String handleIndexedCommands(String command, String input) throws TikaException {
-        if (Parser.length(input) != 2) {
+        boolean isValidIndexCommand = Parser.length(input) != MIN_INDEXED_COMMAND_LENGTH;
+        if (isValidIndexCommand) {
             throw new TikaException("Not a valid command!");
         }
-        int number = Parser.parseIndex(input);
 
-        if (number == 0) {
-            throw new TikaException("Type something!");
-        }
+        int taskNumber = Parser.parseIndex(input);
+        int taskListIndex = taskNumber - 1;
 
-        if (number > taskList.size()) {
+        if (taskNumber > taskList.size()) {
             throw new TikaException("Not a valid task!");
         }
 
-        Task task = taskList.get(number - 1);
+        Task targetTask = taskList.get(taskListIndex);
 
         switch (command) {
         case "mark":
-            if (task.isDone) {
+            if (targetTask.isDone) {
                 throw new TikaException("Task is already marked.");
             }
-            task.toggleIsDone();
-            storage.save(taskList.getTasks());
-            return ui.markTask(task);
+            targetTask.toggleIsDone();
+            saveTasks();
+            return ui.markTask(targetTask);
 
         case "unmark":
-            if (!task.isDone) {
+            if (!targetTask.isDone) {
                 throw new TikaException("Task is already unmarked.");
             }
-            task.toggleIsDone();
-            storage.save(taskList.getTasks());
-            return ui.unmarkTask(task);
+            targetTask.toggleIsDone();
+            saveTasks();
+            return ui.unmarkTask(targetTask);
 
         case "delete":
             int oldSize = taskList.size();
-            taskList.remove(number - 1);
-            storage.save(taskList.getTasks());
+            taskList.remove(taskListIndex);
+            saveTasks();
 
             assert taskList.size() == oldSize - 1 : "TaskList size should decrease after deletion";
 
-            return ui.deleteTask(task, taskList.size());
+            return ui.deleteTask(targetTask, taskList.size());
 
         default:
             throw new TikaException("Command not recognised. Try again!");
         }
+    }
+
+    private void saveTasks() {
+        storage.save(taskList.getTasks());
     }
 
     private String listTasks() throws TikaException {
@@ -114,26 +121,27 @@ public class Tika {
 
     private String findTasks(String input) throws TikaException {
         String keyword = Parser.parseKeyword(input);
-        ArrayList<Task> matches = taskList.find(keyword);
+        ArrayList<Task> taskMatches = taskList.find(keyword);
 
-        if (matches.isEmpty()) {
+        if (taskMatches.isEmpty()) {
             return "No matching tasks found.";
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append("Here are the matching tasks in your list:\n");
-            for (int i = 0; i < matches.size(); i++) {
-                sb.append(i + 1).append(".").append(matches.get(i)).append("\n");
+            for (int i = 0; i < taskMatches.size(); i++) {
+                sb.append(i + 1).append(".").append(taskMatches.get(i)).append("\n");
             }
             return sb.toString().trim();
         }
     }
 
     private String addTask(String input) throws TikaException {
-        Task task = Parser.parseTask(input);
-        assert task != null : "Parsed task should not be null";
-        taskList.add(task);
-        storage.save(taskList.getTasks());
-        return ui.addTask(task, taskList.size());
+        Task newTask = Parser.parseTask(input);
+        assert newTask != null : "Parsed task should not be null";
+
+        taskList.add(newTask);
+        saveTasks();
+        return ui.addTask(newTask, taskList.size());
     }
 
     public boolean shouldExit() {

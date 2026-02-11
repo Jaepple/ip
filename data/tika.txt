@@ -1,1 +1,9 @@
+<<<<<<< HEAD
 T | 0 | fly away
+=======
+E | 0 | project meeting | 2026-02-06 1400 | 2026-02-06 1600
+T | 0 | fly
+T | 1 | book club meeting
+T | 0 | eat food
+E | 0 | poop | today | ystday
+>>>>>>> master
