@@ -6,7 +6,7 @@
 
 **Tika** is your personal task manager. Just like Tika the elephant, using this app will help you remember everything! Tap into Tika's **big memory** (and yes, that's not the only thing big about her 😉) to keep your tasks organized effortlessly.
 
-![Product Screenshot](docs/Ui.png)
+![Product Screenshot](Ui.png)
 
 With Tika, you can manage **three types of tasks**: simple ToDos, Deadlines, and Events.
 
