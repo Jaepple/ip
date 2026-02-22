@@ -170,6 +170,7 @@ You can exit the Tika application when you are done managing your tasks.
 - The GUI window will disappear, ending your Tika session.
 ---
 ## Command Summary
+
 | Command | Format | Description | Example |
 |---------|--------|-------------|---------|
 | Add ToDo | `todo <description>` | Adds a simple task without a date or time | `todo walk my dog` |
