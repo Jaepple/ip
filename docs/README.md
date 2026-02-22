@@ -1,11 +1,12 @@
 # Tika User Guide
 
-![Product Screenshot](docs/Ui.png) 
 ---
 
 ## Introduction
 
 **Tika** is your personal task manager. Just like Tika the elephant, using this app will help you remember everything! Tap into Tika's **big memory** (and yes, that's not the only thing big about her 😉) to keep your tasks organized effortlessly.
+
+![Product Screenshot](docs/Ui.png)
 
 With Tika, you can manage **three types of tasks**: simple ToDos, Deadlines, and Events.
 
@@ -17,7 +18,7 @@ Follow these steps to get Tika running on your computer:
 1. **Ensure you have Java 17 or above installed.**
     - **Mac users:** Make sure you have the exact JDK version required.
 
-2. **Download the latest `.jar` file** from [here](#).  
+2. **Download the latest `.jar` file** from [here](https://github.com/Jaepple/ip/releases/tag/A-Release).  
    *(Replace `#` with the actual download link.)*
 
 3. **Copy the `.jar` file** to the folder you want to use as the home folder for Tika.
