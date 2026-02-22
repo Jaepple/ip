@@ -32,6 +32,13 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+
+        Platform.runLater(() -> {
+            dialogContainer.getScene().getStylesheets().add(
+                    getClass().getResource("/view/style.css").toExternalForm()
+            );
+        });
+
         dialogContainer.getChildren().add(
                 DialogBox.getTikaDialog(
                         "Hello! I'm Tika. How can I help you today?",

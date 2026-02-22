@@ -1,0 +1,16 @@
+/* Styles written with AI assistance from ChatGPT */
+.user-bubble {
+    -fx-background-color: #DCF8C6;
+    -fx-background-radius: 15;
+    -fx-padding: 8 12 8 12;
+}
+
+.tika-bubble {
+    -fx-background-color: #EEEEEE;
+    -fx-background-radius: 15;
+    -fx-padding: 8 12 8 12;
+}
+
+.chat-background {
+    -fx-background-color: #ECE5DD;
+}
